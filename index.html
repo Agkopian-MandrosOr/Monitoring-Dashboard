@@ -13,9 +13,15 @@
             return d.getDate()+"/"+(d.getMonth() + 1)+"/"+d.getFullYear()+" - "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds();
         }
 
+
+
         function getDataFunction() {
-            const token = "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";
-            const repository = "octocat/Hello-World";
+            const github_data = {
+                "token": "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",
+                "owner":"octocat",
+                "repository": "Hello-World"
+            }
+
         
             function getIssueData(states) {
                 return {
@@ -25,11 +31,11 @@
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`
+                        "Authorization": `Bearer ${github_data["token"]}`
                     },
                     data: JSON.stringify({
                         query: `{
-                            repository(owner: "${repository.split('/')[0]}", name: "${repository.split('/')[1]}") {
+                            repository(owner: "${github_data["owner"]}", name: "${github_data["repository"]}") {
                                 issues(states: ${states}) {
                                     totalCount
                                 }
