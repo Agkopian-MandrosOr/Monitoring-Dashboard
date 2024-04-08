@@ -16,7 +16,7 @@
             return d.getDate()+"/"+(d.getMonth() + 1)+"/"+d.getFullYear()+" - "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds();
         }
         
-        function pieChart(){
+        function pieChart(openPieIssues,closedPieIssues){
 
             var ctx = document.getElementById('myDoughnutChart').getContext('2d');
             var myDoughnutChart = new Chart(ctx, {
@@ -25,7 +25,7 @@
                   labels: ['Open Issues', 'Closed Issues'],
                   datasets: [{
                     label: 'Value',
-                    data: [50, 300],
+                    data: [openPieIssues,closedPieIssues],
                     backgroundColor: [
                     'rgb(54, 162, 235)',
                     'rgb(255, 99, 132)'
@@ -86,12 +86,15 @@
             $.ajax(getOpenIssues).done(function (response) {
                 console.log(response);
                 updateUI('#data_1', response.data.repository.issues.totalCount);
+                const openPieIssues = response.data.repository.issues.totalCount;
             });
         
             const getClosedIssues = getIssueData("CLOSED");
             $.ajax(getClosedIssues).done(function (response) {
                 console.log(response);
                 updateUI('#data_2', response.data.repository.issues.totalCount);
+                const closedPieIssues = response.data.repository.issues.totalCount;
+                pieChart(openPieIssues,closedPieIssues);
             });
         }
         
