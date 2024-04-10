@@ -16,7 +16,7 @@
             return d.getDate()+"/"+(d.getMonth() + 1)+"/"+d.getFullYear()+" - "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds();
         }
         
-        function pieChart(){
+        function pieChart(openPieIssues,closedPieIssues){
 
             var ctx = document.getElementById('myDoughnutChart').getContext('2d');
             var myDoughnutChart = new Chart(ctx, {
@@ -25,7 +25,7 @@
                   labels: ['Open Issues', 'Closed Issues'],
                   datasets: [{
                     label: 'Value',
-                    data: [50, 300],
+                    data: [50,100],
                     backgroundColor: [
                     'rgb(54, 162, 235)',
                     'rgb(255, 99, 132)'
@@ -34,8 +34,8 @@
                   }]
                 },
                 options: {
-                  responsive: false, // True: Enable responsiveness False: Disable responsiveness
-                  maintainAspectRatio: true, // True: Enable aspect ratio False: Disable aspect ratio
+                  responsive: true, // True: Enable responsiveness False: Disable responsiveness
+                  maintainAspectRatio: false, // True: Enable aspect ratio False: Disable aspect ratio
                   width: 500,
                   height: 500 
                 }
@@ -86,12 +86,15 @@
             $.ajax(getOpenIssues).done(function (response) {
                 console.log(response);
                 updateUI('#data_1', response.data.repository.issues.totalCount);
+                const openPieIssues = response.data.repository.issues.totalCount;
             });
         
             const getClosedIssues = getIssueData("CLOSED");
             $.ajax(getClosedIssues).done(function (response) {
                 console.log(response);
                 updateUI('#data_2', response.data.repository.issues.totalCount);
+                const closedPieIssues = response.data.repository.issues.totalCount;
+                pieChart(openPieIssues,closedPieIssues);
             });
         }
         
@@ -145,7 +148,7 @@
     </div>
     
     
-    
+    <!-- SETTINGS SECTION -->
     <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="offcanvasExampleLabel">Settings</h5>
@@ -181,14 +184,19 @@
         
 
     </div>
-
+    <!-- SETTINGS SECTION END -->
 
     <p>&nbsp;</p>
     <h2 style="text-align: center">Welcome Back!</h2>
     <p>&nbsp;</p>
     
+    <!-- CANVAS SECTION -->
     <!-- The canvas where the open and closed info will be shown -->
-    <canvas id="myDoughnutChart"></canvas>
+    <div class="d-flex p-2">
+        <canvas id="myDoughnutChart"></canvas>
+    </div>
+    <!-- CANVAS SECTION END -->
+
 
     <div class="container mt-3">
         
