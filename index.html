@@ -11,16 +11,19 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        var openPieIssues;
+        var closedPieIssues;
         function getLastTimestamp(){
             let d = new Date($.now());
             return d.getDate()+"/"+(d.getMonth() + 1)+"/"+d.getFullYear()+" - "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds();
         }
         
         function pieChart(openPieIssues,closedPieIssues){
-
-           if(openPieIssues == null || closedPieIssues == null){
-                var openPieIssues = 50;
-                var closedPieIssues = 50;
+            //myDoughnutChart.destroy();
+            //need to change it, very wip code rn
+            if(openPieIssues == null || closedPieIssues == null){
+            var openPieIssues = 50;
+            var closedPieIssues = 50;
             }
 
             var ctx = document.getElementById('myDoughnutChart').getContext('2d');
@@ -30,7 +33,7 @@
                   labels: ['Open Issues', 'Closed Issues'],
                   datasets: [{
                     label: 'Value',
-                    data: [50,100],
+                    data: [openPieIssues,closedPieIssues],
                     backgroundColor: [
                     'rgb(54, 162, 235)',
                     'rgb(255, 99, 132)'
@@ -45,7 +48,6 @@
                   height: 500 
                 }
               });
-              
             
 
         }
@@ -92,7 +94,8 @@
                 console.log(response);
                 updateUI('#data_1', response.data.repository.issues.totalCount);
                 //need to fix this
-                const openPieIssues = response.data.repository.issues.totalCount;
+                openPieIssues = response.data.repository.issues.totalCount;
+                console.log(openPieIssues);
             });
         
             const getClosedIssues = getIssueData("CLOSED");
@@ -100,7 +103,8 @@
                 console.log(response);
                 updateUI('#data_2', response.data.repository.issues.totalCount);
                 //need to fix this
-                const closedPieIssues = response.data.repository.issues.totalCount;
+                closedPieIssues = response.data.repository.issues.totalCount;
+                console.log(closedPieIssues);
                 //doesn't take the value, but will see it later
                 pieChart(openPieIssues,closedPieIssues);
             });
