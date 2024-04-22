@@ -13,7 +13,8 @@
     <script>
         var openPieIssues;
         var closedPieIssues;
-
+        var myDoughnutChart;
+        
         const github_data = {
             "token": "",
             "owner": "",
@@ -34,7 +35,7 @@
             }
 
             var ctx = document.getElementById('myDoughnutChart').getContext('2d');
-            var myDoughnutChart = new Chart(ctx, {
+            myDoughnutChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                   labels: ['Open Issues', 'Closed Issues'],
@@ -52,10 +53,9 @@
                   responsive: true, // True: Enable responsiveness False: Disable responsiveness
                   maintainAspectRatio: false, // True: Enable aspect ratio False: Disable aspect ratio
                   width: 500,
-                  height: 500 
+                  height: 500
                 }
               });
-            
 
 
         }
@@ -114,6 +114,7 @@
                 updateUI('#data_2', response.data.repository.issues.totalCount);
                 closedPieIssues = response.data.repository.issues.totalCount;
                 console.log(closedPieIssues);
+                myDoughnutChart.destroy();
                 pieChart(openPieIssues,closedPieIssues);
             });
         }
