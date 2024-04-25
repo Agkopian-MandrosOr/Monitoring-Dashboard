@@ -70,6 +70,50 @@
 
         function getDataFunction() {
 
+            function getAssignedData(states) {
+                return {
+                    async: true,
+                    crossDomain: true,
+                    url: "https://api.github.com/graphql",
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${github_data["token"]}`
+                    },
+                    data: JSON.stringify({
+                        query: `{
+                            repository(owner: "${github_data["owner"]}", name: "${github_data["repository"]}") {
+                                issues(states: ${states}, first: 10) {
+                                    edges {
+                                        node {
+                                            title
+                                            url
+                                            createdAt
+                                            author {
+                                                login
+                                            }
+                                            assignees(first: 5) {
+                                                nodes {
+                                                    login
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }`
+                    })
+                };
+            }
+
+            $.ajax(getAssignedData("OPEN")).done(function (response) {
+                console.log(response);
+               
+                updateUI('#data_name', response.data.repository.issues.edges[0].node.title);
+                updateUI('#data_issuedBy', response.data.repository.issues.edges[0].node.author.login);
+                //updateUI('#data_Assigned', response.data.repository.issues.edges[0].assignees[0].nodes[0].login);
+                updateUI('#data_url', response.data.repository.issues.edges[0].node.url);
+            });
         
             function getIssueData(states) {
                 return {
@@ -100,18 +144,18 @@
         
             const getOpenIssues = getIssueData("OPEN");
             $.ajax(getOpenIssues).done(function (response) {
-                console.log(response);
+                //console.log(response);
                 updateUI('#data_1', response.data.repository.issues.totalCount);
                 openPieIssues = response.data.repository.issues.totalCount;
-                console.log(openPieIssues);
+                //console.log(openPieIssues);
             });
         
             const getClosedIssues = getIssueData("CLOSED");
             $.ajax(getClosedIssues).done(function (response) {
-                console.log(response);
+                //console.log(response);
                 updateUI('#data_2', response.data.repository.issues.totalCount);
                 closedPieIssues = response.data.repository.issues.totalCount;
-                console.log(closedPieIssues);
+                //console.log(closedPieIssues);
                 myDoughnutChart.destroy();
                 pieChart(openPieIssues,closedPieIssues);
             });
@@ -261,7 +305,7 @@
         <tr>
           <th>Name</th>
           <th>Issued By</th>
-          <th>Author</th>
+          <th>Assigned</th>
           <th>Link</th>
         </tr>
       </thead>
@@ -269,7 +313,7 @@
         <tr>
           <td><span id="data_name"></span></td>
           <td><span id="data_issuedBy"></span></td>
-          <td><span id="data_Author"></span></td>
+          <td><span id="data_Assigned"></span></td>
           <td><span id="data_url"></span></td>
         </tr>
       </tbody>
