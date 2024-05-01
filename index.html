@@ -108,12 +108,34 @@
 
             $.ajax(getAssignedData("OPEN")).done(function (response) {
                 console.log(response);
-               
-                updateUI('#data_name', response.data.repository.issues.edges[0].node.title);
-                updateUI('#data_issuedBy', response.data.repository.issues.edges[0].node.author.login);
-                //updateUI('#data_Assigned', response.data.repository.issues.edges[0].assignees[0].nodes[0].login);
-                updateUI('#data_url', response.data.repository.issues.edges[0].node.url);
+                let issues = response.data.repository.issues.edges;
+            
+                
+                $('#issueDataTable').empty();
+            
+                
+                issues.forEach(function(issue) {
+                    let rowData = issue.node;
+                    let assignees = rowData.assignees.nodes.map(function(assignee) {
+                        return assignee.login;
+                    }).join(', ');
+            
+                   
+                    let authorName = rowData.author ? rowData.author.login : "Unknown";
+            
+                    let newRow = `
+                        <tr>
+                            <td>${rowData.title}</td>
+                            <td>${authorName}</td>
+                            <td>${assignees}</td>
+                            <td><a href="${rowData.url}">Link</a></td>
+                        </tr>`;
+                    
+                    $('#issueDataTable').append(newRow);
+                });
             });
+            
+            
         
             function getIssueData(states) {
                 return {
@@ -184,6 +206,7 @@
                 $('#data_name').text('');
                 $('#data_issuedBy').text('');
                 $('#data_url').text('');
+                $('#issueDataTable').empty();
             }
         }
 
@@ -313,7 +336,7 @@
           <th>Link</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="issueDataTable">
         <tr>
           <td><span id="data_name"></span></td>
           <td><span id="data_issuedBy"></span></td>
