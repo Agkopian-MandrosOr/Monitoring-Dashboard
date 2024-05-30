@@ -166,18 +166,14 @@
         
             const getOpenIssues = getIssueData("OPEN");
             $.ajax(getOpenIssues).done(function (response) {
-                //console.log(response);
                 updateUI('#data_1', response.data.repository.issues.totalCount);
                 openPieIssues = response.data.repository.issues.totalCount;
-                //console.log(openPieIssues);
             });
         
             const getClosedIssues = getIssueData("CLOSED");
             $.ajax(getClosedIssues).done(function (response) {
-                //console.log(response);
                 updateUI('#data_2', response.data.repository.issues.totalCount);
                 closedPieIssues = response.data.repository.issues.totalCount;
-                //console.log(closedPieIssues);
                 myDoughnutChart.destroy();
                 pieChart(openPieIssues,closedPieIssues);
             });
